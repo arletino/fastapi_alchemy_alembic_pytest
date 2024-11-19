@@ -83,10 +83,3 @@ async def session(sessionmanager_for_tests):
 
 MIGRATION_TASK: Task = None
 
-@pytest.fixture()
-async def postgres(pg_url):
-    '''
-    Создаем пустую временную базу данных.
-    '''
-    async with tmp_database(pg_url, 'pytest') as tmp_url:
-        yield tmp_url

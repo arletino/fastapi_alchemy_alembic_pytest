@@ -11,7 +11,10 @@ async def test_orm_session(session):
     session.add(user)
     await session.commit()
 
-    rows = await session.execute(text('SELECT id, name, fullname FROM "user_account"'))
+    rows = await session.execute(text(
+        "SELECT id, name, fullname FROM test.user_account WHERE name='Michael'"
+        )
+    )
     result = list(rows)[0]
     assert isinstance(result[0], int)
     assert result[1] == 'Michael'

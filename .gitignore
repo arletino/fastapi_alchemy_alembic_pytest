@@ -20,7 +20,9 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
-
+# Python pycache
 __pycache__
-.mypy_cashe
+# Mypy cache
+.mypy_cache
+# Pytest cache
 .pytest_cache

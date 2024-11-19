@@ -63,9 +63,10 @@ async def get_user(
 
 @router.get('/', response_model=APIUserListResponse)
 async def get_users(session: AsyncSession = Depends(orm.get_session)) -> JSONResponse:
-    users_results = await session.scalar(select(orm.User))
+    users_results = await session.scalars(select(orm.User))
+    print(users_results)
     response_data = [
-        UserResponse.model_validate(u).model_dump() for u in users_results.all()
+        UserResponse.model_validate(u).model_dump() for u in users_results
     ]
     return JSONResponse(
         content={
