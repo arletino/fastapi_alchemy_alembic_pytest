@@ -85,7 +85,7 @@ async def create_database_async(
 
     if (dialect_name == "mssql" and dialect_driver in {"pymssql", "pyodbc"}) or (
         dialect_name == "postgresql"
-        and dialect_driver in {"asyncpg", "pg8000", "psycopg2", "psycopg2cffi"}
+        and dialect_driver in {"asyncpg", "pg8000", "psycopg2", "psycopg"}
     ):
         engine = create_async_engine(url, isolation_level="AUTOCOMMIT")
     else:
@@ -144,7 +144,7 @@ async def drop_database_async(url: str) -> None:
         "asyncpg",
         "pg8000",
         "psycopg2",
-        "psycopg2cffi",
+        "psycopg",
     }:
         engine = create_async_engine(url, isolation_level="AUTOCOMMIT")
     else:
