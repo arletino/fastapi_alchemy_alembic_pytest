@@ -11,5 +11,6 @@ alembic сгенерирует новую миграцию в папке alembic
 from .base_model import OrmBase
 from .session_manager import db_manager, get_session
 from .user_model import User
+from .models.parts_model import Part
 
-__all__ = ['OrmBase', 'get_session', 'db_manager', 'User']
+__all__ = ['OrmBase', 'get_session', 'db_manager', 'User', 'Part']
