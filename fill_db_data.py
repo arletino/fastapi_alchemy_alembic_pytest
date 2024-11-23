@@ -1,15 +1,23 @@
 # from .. import Part_in
 from app.api.models.parts import Part_in, Part_out
-
+from app.settings import settings
 import orm 
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import pandas as pd
 import numpy as np
+import asyncio
+from typing import AsyncIterator
+import contextlib
 
-import os
 
+
+@contextlib.asynccontextmanager
+async def connect_db() -> AsyncIterator[None]:
+    orm.db_manager.init(settings.database_url)
+    yield
+    await orm.db_manager.close()
 
 def parse_table_sheet(table, sheet):
     df =  table.parse(table.sheet_names[2])
@@ -26,21 +34,35 @@ def read_excel_file(file_path: str) -> list[pd.DataFrame]:
     # print(tables_list)
     return tables_list 
 
-def input_values_db(values: pd.DataFrame) -> None:
-    session: AsyncSession = orm.get_session() 
+async def input_values_db(part: orm.Part, session: AsyncSession = orm.get_session) -> None:
+    # session: AsyncSession = orm.get_session()
+    session.add(part)
+    await session.commit()
+    await session.refresh(part)
+       
 
-   
-if __name__ == '__main__':
+async def main():
     file = 'Данные_для_базы.xlsx'
    
     df = read_excel_file(file)
     # print(df)
     # test = Part_in(**df[0].iloc[0])
+    
     test = dict(df[0].iloc[0]).values()
     data = dict(zip(Part_in().model_dump().keys(), test))
     part = Part_in(**data)
-    part_db = orm.Part(**part)
-    print(part)
+    part_db = orm.Part(**part.model_dump())
+    print(part_db)
+    async with connect_db(): 
+    #     async with orm.db_manager.session() as session:
+        for session in orm.db_manager.session():         
+            await input_values_db(part_db, session)
+
+
+if __name__ == '__main__':
+    
+    asyncio.run(main())
+
     # for item in test.model_dump().keys():
 
     #     print(item) 
