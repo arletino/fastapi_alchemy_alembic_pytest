@@ -22,7 +22,6 @@ async def connect_db() -> AsyncIterator[None]:
 def parse_table_sheet(table, sheet):
     df =  table.parse(table.sheet_names[2])
     df = df.replace({np.nan: None})
-    # print(df.head())
     return df
 
 def read_excel_file(file_path: str) -> list[pd.DataFrame]:
@@ -34,8 +33,7 @@ def read_excel_file(file_path: str) -> list[pd.DataFrame]:
     # print(tables_list)
     return tables_list 
 
-async def input_values_db(part: orm.Part, session: AsyncSession = orm.get_session) -> None:
-    # session: AsyncSession = orm.get_session()
+async def input_values_db(part: orm.Part, session: AsyncSession) -> None:
     session.add(part)
     await session.commit()
     await session.refresh(part)
@@ -52,12 +50,9 @@ async def main():
     data = dict(zip(Part_in().model_dump().keys(), test))
     part = Part_in(**data)
     part_db = orm.Part(**part.model_dump())
-    print(part_db)
-    async with connect_db(): 
-    #     async with orm.db_manager.session() as session:
-        for session in orm.db_manager.session():         
+    async with connect_db() as con: 
+        async for session in orm.get_session():
             await input_values_db(part_db, session)
-
 
 if __name__ == '__main__':
     

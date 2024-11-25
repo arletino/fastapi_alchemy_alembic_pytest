@@ -28,7 +28,6 @@ class DatabaseSessionManager:
         #         'prepared_statement_cache_size': 0,
         #     }
         # else:
-        print('session init')
         connect_args = {}
         self._engine = create_async_engine(
                 url=db_url,
@@ -47,7 +46,7 @@ class DatabaseSessionManager:
         self._engine = None
         self._sessionmaker = None 
 
-    # @contextlib.asynccontextmanager 
+    @contextlib.asynccontextmanager 
     async def session(self) -> AsyncIterator[AsyncSession]:
         print('session')
         if self._sessionmaker is None:
@@ -73,6 +72,6 @@ class DatabaseSessionManager:
 
 db_manager = DatabaseSessionManager()
 
-async def get_session() -> AsyncSession: 
-    session = db_manager.session()
-    yield session
+async def get_session() -> AsyncSession:
+    async with db_manager.session() as session:
+        yield session

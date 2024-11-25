@@ -1,6 +1,9 @@
-import genr
+import asyncio
+import gen_it
 
-test = genr.gen1
-test()
-next(test())
-next(test())
+async def main():
+    async for _ in gen_it.start_gen():
+        k = _
+        print(k.get_c())
+
+asyncio.run(main())
