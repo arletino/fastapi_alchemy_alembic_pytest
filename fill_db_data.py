@@ -34,8 +34,6 @@ def read_excel_file(file_path: str) -> list[pd.DataFrame]:
         tables_list.append(parse_table_sheet(tables, table))
     return tables_list 
 
-
-
 async def input_values_db(parts: list[orm.Part], session: AsyncSession) -> None:
     tmp = set()
     for part in parts:
