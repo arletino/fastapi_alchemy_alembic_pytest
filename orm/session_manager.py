@@ -48,7 +48,6 @@ class DatabaseSessionManager:
 
     @contextlib.asynccontextmanager 
     async def session(self) -> AsyncIterator[AsyncSession]:
-        print('session')
         if self._sessionmaker is None:
             raise IOError('DatabaseSessionManager is not initialized')
         async with self._sessionmaker() as session:

@@ -1,5 +1,11 @@
 from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
+from pydantic import field_validator
+from pydantic import ValidationError
+
+
+from uuid import UUID
+
 
 
 class Part_in(BaseModel):
@@ -27,11 +33,25 @@ class Part_in(BaseModel):
     hashtags: str | None = None
     comment: str | None = None
 
+    @field_validator('qty_in_unit') 
+    @classmethod
+    def str_float_int(cls, param: str) -> int:
+        try:
+            return int(param)
+        except TypeError:
+            return None
+        except ValueError:
+            try:
+                return int(float(param))
+            except ValueError:
+                return None
+                
+
     class Config:
         coerce_numbers_to_str=True
 
 class Part_out(Part_in): 
     
-    id: int
+    id: UUID
     createAt: datetime 
     changeAt: datetime
