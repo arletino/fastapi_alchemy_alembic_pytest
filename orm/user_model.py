@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from .base_model import OrmBase
+from .orm_model import OrmBase
 
 
 class User(OrmBase):

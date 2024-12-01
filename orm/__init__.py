@@ -8,7 +8,7 @@
 alembic сгенерирует новую миграцию в папке alembic/versions.
 '''
 
-from .base_model import OrmBase
+from .orm_model import OrmBase
 from .session_manager import db_manager, get_session
 from .user_model import User
 from .models.parts_model import Part

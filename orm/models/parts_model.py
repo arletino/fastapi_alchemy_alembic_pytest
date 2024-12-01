@@ -7,10 +7,10 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from sqlalchemy.orm import Mapped, mapped_column
 
-from orm.base_model import OrmBase
+from orm.models.base_model import BaseModel
 
 
-class Part(OrmBase):
+class Part(BaseModel):
     '''
     Модель Part - таблица запасные части.
     '''
