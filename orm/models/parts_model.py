@@ -1,3 +1,4 @@
+'''Model describe table spare parts'''
 from datetime import datetime
 
 import uuid
@@ -7,10 +8,10 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from sqlalchemy.orm import Mapped, mapped_column
 
-from orm.models.base_model import BaseModel
+from orm.orm_model import OrmBase
 
 
-class Part(BaseModel):
+class Part(OrmBase):
     '''
     Модель Part - таблица запасные части.
     '''

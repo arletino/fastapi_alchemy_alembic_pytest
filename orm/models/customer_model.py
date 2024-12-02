@@ -33,4 +33,14 @@ class Customer(OrmBase):
     company_type: Mapped[str | None] = None
     region_ru: Mapped[str | None] = None
     region_en: Mapped[str | None] = None
+    hashtags: Mapped[str | None]
+    create_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        insert_default=func.now() 
+    )    
+    update_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), 
+        server_default=func.now()
+    )
+    comment: Mapped[str | None]
 

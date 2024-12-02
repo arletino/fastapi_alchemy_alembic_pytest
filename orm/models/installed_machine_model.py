@@ -23,12 +23,16 @@ class InstalledMachine(OrmBase):
 
     __tablename__ = 'installed_machines'
 
-    machine_id: Mapped[int] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    machine_id: Mapped[int] = mapped_column(
+        UUID(as_uuid=True), 
+        primary_key=True, 
+        default=uuid.uuid4
+        )
     machine_sn: Mapped[str]
     name_short: Mapped[str | None] = None 
     name_full: Mapped[str | None] = None
     customer_id: Mapped[UUID] = mapped_column(ForeignKey('customer.customer_id'))
-    customer: Mapped['Customer'] = relationship()
+    customer: Mapped['Customer'] = relationship('Customer', back_populates='machine')
     date_install: Mapped[DateTime] = None
     city_ru_install: Mapped[str] = None 
     city_eng_install: Mapped[str] = None 
