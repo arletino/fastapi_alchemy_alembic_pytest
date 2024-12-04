@@ -48,3 +48,4 @@ class Part(OrmBase):
         server_default=func.now()
     )
     comment: Mapped[str | None]
+

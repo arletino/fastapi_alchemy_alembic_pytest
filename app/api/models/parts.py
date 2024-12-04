@@ -49,9 +49,13 @@ class Part_in(BaseModel):
 
     class Config:
         coerce_numbers_to_str=True
+        from_attributes = True
 
 class Part_out(Part_in): 
     
     id: UUID
-    createAt: datetime 
-    changeAt: datetime
+    create_at: datetime 
+    update_at: datetime
+
+    class Config:
+        from_attributes = True

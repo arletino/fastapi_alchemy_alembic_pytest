@@ -18,30 +18,18 @@ from app.api.models.parts import Part_out
 
 logger = logging.getLogger()
 
-@contextlib.asynccontextmanager
-async def connect_db() -> AsyncIterator[None]:
-    orm.db_manager.init(settings.database_url)
-    yield
-    await orm.db_manager.close()
-
-async def get_posts() -> list[Part]:
+async def get_parts() -> list[Part]:
     stmt = select(Part)
-    async with connect_db():
-        async with get_session() as session:
-            parts: list[Part] | None = await session.scalars(stmt)
-            print(parts)
+    async for session in  get_session():
+        parts: list[Part] | None = await session.scalars(stmt)
+        print(parts)
+    lst_parts: list[Part_out] = []
     for part in parts:
         try:
             temp = Part_out.model_validate(part)
+            lst_parts.append(temp)
             print(temp.model_dump_json())
         except ValidationError as e:
             print(e.errors())
             break
-    return 
-
-async def main():
-    parts = await get_posts()
-
-
-if __name__ == '__main__':
-   asyncio.run(main()) 
+    return lst_parts    

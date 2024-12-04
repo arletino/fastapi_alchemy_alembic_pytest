@@ -7,11 +7,8 @@ from session_manager import get_session
 from .models.parts_model import Part
 
 
-@contextlib.asynccontextmanager
-async def connect_db() -> AsyncIterator[None]:
-    orm.db_manager.init(settings.database_url)
-    yield
-    await orm.db_manager.close()
+
+
 async def get_posts() -> list[Part]:
     stmt = select(Part)
     session = await get_session()

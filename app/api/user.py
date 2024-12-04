@@ -14,8 +14,9 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from app.api.models.parts import Part_out
 import orm
+from utils.service_parts import get_parts
 
 
 class UserCreateRequest(BaseModel):
@@ -41,6 +42,10 @@ class APIUserListResponse(BaseModel):
     status: Literal['ok'] = 'ok'
     data: list[UserResponse]
 
+class APIPartsResponse(BaseModel):
+    status: Literal['ok'] = 'ok'
+    data: list[Part_out]
+
 router = APIRouter()
 
 @router.get('/{user_id}/', response_model=APIUserResponse)
@@ -60,6 +65,13 @@ async def get_user(
             'data': response_model.model_dump(),
         }
     )
+@router.get('/test', response_model=APIPartsResponse)
+async def get_parts(all: Part_out = Depends(get_parts)) -> JSONResponse:
+    parts: list[JSONResponse]= [part.model_dump_json() for part in all]
+    return JSONResponse(
+        content=parts
+        )
+
 
 @router.get('/', response_model=APIUserListResponse)
 async def get_users(session: AsyncSession = Depends(orm.get_session)) -> JSONResponse:

@@ -71,6 +71,7 @@ class DatabaseSessionManager:
 
 db_manager = DatabaseSessionManager()
 
-async def get_session() -> AsyncSession:
+# @contextlib.asynccontextmanager
+async def get_session() -> AsyncIterator[AsyncSession]:
     async with db_manager.session() as session:
         yield session
