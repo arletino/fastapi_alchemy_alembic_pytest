@@ -2,13 +2,21 @@
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from models.parts import Part_out
+from utils.service_parts import ServicePart
+
+from app.api.models.parts import (
+    Part_out,
+    APIPartListResponse
+)
+
+
 router_parts = APIRouter()
 
 
-@router_parts.get('/parts/', )
-async def get_parts(parts: list[Part_out] = Depends(get_parts)) -> JSONResponse:
-    response_parts = [part.model_dump() for part in parts]
+
+@router_parts.get('/', response_model=APIPartListResponse)
+async def get_parts(parts: list[Part_out] = Depends(ServicePart.get_parts)) -> JSONResponse:
+    response_parts = [part.model_dump_json() for part in parts]
     return JSONResponse(
         content={
             'status': 'ok',

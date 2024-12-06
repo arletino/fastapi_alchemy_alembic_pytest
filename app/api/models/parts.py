@@ -3,6 +3,8 @@ from datetime import datetime
 from pydantic import field_validator
 from pydantic import ValidationError
 
+from typing import Literal
+
 
 from uuid import UUID
 
@@ -59,3 +61,7 @@ class Part_out(Part_in):
 
     class Config:
         from_attributes = True
+
+class APIPartListResponse(BaseModel):
+    status: Literal['ok'] = 'ok'
+    data: list[Part_out]
