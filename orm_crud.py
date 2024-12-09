@@ -39,31 +39,21 @@ async def get_posts() -> list[Part]:
             break
     return 
 
-async def get_part() -> list[Part]:
-    part_db = Part_in()
-    # part_db.article = 
-    part_db.name_ru = 'Распределитель CPE18-M 1H-5J-1/4'
-    dump = part_db.model_dump()
-    temp = dict(filter(lambda x: x[1],  dump.items()))
-
-    
-    stmt = select(Part).filter_by(**temp)
-    print(stmt)
+async def get_part(article: str = '151717') -> Part_out:
+    stmt = select(Part).where(Part.article == article)
     async with connect_db():
         async for session in get_session():
-            # temp = await session.get(part_db)
-            parts: Part | None = await session.scalars(stmt)
-            for part in parts:
-                temp = Part_out.model_validate(part)
-                print(temp.model_dump())
-    # for part in parts:
-    #     try:
-    #         temp = Part_out.model_validate(part)
-    #         print(temp.model_dump_json())
-    #     except ValidationError as e:
-    #         print(e.errors())
-    #         break
-    return 
+            parts = await session.scalars(stmt)
+            if parts:
+                parts_out = list(
+                    map(
+                        lambda x: Part_out.model_validate(x).model_dump(), 
+                        parts
+                        )
+                    )
+                print(parts_out)
+                return parts_out
+    return None
 
 async def main():
     part = await get_part()

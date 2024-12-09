@@ -65,3 +65,7 @@ class Part_out(Part_in):
 class APIPartListResponse(BaseModel):
     status: Literal['ok'] = 'ok'
     data: list[Part_out]
+
+class APIPartResponse(BaseModel):
+    status: Literal['ok'] = 'ok'
+    data: Part_out
