@@ -1,8 +1,24 @@
-from orm.models.base_model import BaseModel
-from sqlalchemy.orm import Mapped
+from fastapi import Depends, FastAPI
+import uvicorn
 
-class NewModel(BaseModel):
-    new_field: Mapped[str | None] = None
+from app.settings import settings
 
-b = NewModel()
-print(b.__tablename__)
+
+app = FastAPI()
+
+async def func(param: str, param2: str):
+    return {'param': param}
+
+@app.post('/item')
+async def read_par(some: str, f: dict = Depends(func)):
+    return {
+        'some': some,
+        'f':f
+        }
+
+if __name__ == '__main__':
+    uvicorn.run(
+        app,
+        host=settings.app_host,
+        port=settings.app_port,
+    )

@@ -50,8 +50,15 @@ async def get_part_by(
     response_model=APIPartListResponse,
     status_code=status.HTTP_201_CREATED
     )
-async def create_parts(
-    list_parts: list[Part_in],
-    add_part: ServicePart = Depends(ServicePart.) 
+async def add_parts(
+    parts: list[Part_in] = Depends(ServicePart.add_parts) 
     ) -> JSONResponse:
+    data = [part.model_dump() for part in parts]
+    return JSONResponse(
+        content = {
+            'status': 'ok',
+            'data': data
+        },
+        status_code=status.HTTP_201_CREATED
+    )
 

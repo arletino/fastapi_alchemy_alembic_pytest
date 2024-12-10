@@ -3,6 +3,7 @@ import contextlib
 import logging
 
 from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 from pydantic import ValidationError
 
@@ -20,7 +21,9 @@ from app.api.models.parts import (
 )
 
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
+logging.basicConfig(datefmt='%Y-%m-%d %H:%M:%S', filename='myapp.log', level=logging.INFO)
+
 
 class ServicePart:
     async def get_parts() -> list[Part]:
@@ -44,8 +47,23 @@ class ServicePart:
         async for session in  get_session():
             session.scalars(stmt) 
         
-    async def add_parts(parts: list[Part_in]) -> None:
-        pass
+    async def add_parts(parts: list[Part_in]) -> list[Part_in]:
+        
+        async for session in get_session():
+            part_db = []
+            for part in parts:
+                part_db.append(Part(**part.model_dump()))
+            
+            try:
+                session.add_all(part_db)
+                await session.flush()
+            except IntegrityError as e:
+                logger.exception(e.orig.args)
+                await session.rollback()
+            # except SQLAlchemyError as e:
+            #     logger.exception(e) 
+            await session.commit()                    
+        return parts
 
     async def add_part(part: Part_in) -> None:
         pass    

@@ -12,7 +12,7 @@ from uuid import UUID
 
 class Part_in(BaseModel):
     
-    article: str | None = None
+    article: str
     article_unit: str | None = None
     serial_number_machine: str | None = None
     alternative_article: str  | None = None
