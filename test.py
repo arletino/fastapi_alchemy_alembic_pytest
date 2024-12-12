@@ -1,16 +1,23 @@
 from fastapi import Depends, FastAPI
 import uvicorn
+from typing import Annotated, Any
 
 from app.settings import settings
 
 
 app = FastAPI()
 
-async def func(param: str, param2: str):
-    return {'param': param}
-
+class Func:
+    def __init__(self, a: str, b: str):
+        self.a = a
+        self.b = b
+        
+    async def test(self, a: str, b: str):
+        return 'work'
+    
 @app.post('/item')
-async def read_par(some: str, f: dict = Depends(func)):
+async def read_par(some: str, f: Annotated[Func, Depends()]):
+    data = f.test()
     return {
         'some': some,
         'f':f

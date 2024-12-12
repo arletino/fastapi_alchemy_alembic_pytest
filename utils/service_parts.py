@@ -48,20 +48,17 @@ class ServicePart:
             session.scalars(stmt) 
         
     async def add_parts(parts: list[Part_in]) -> list[Part_in]:
-        
         async for session in get_session():
             part_db = []
             for part in parts:
                 part_db.append(Part(**part.model_dump()))
-            
             try:
                 session.add_all(part_db)
                 await session.flush()
             except IntegrityError as e:
-                logger.exception(e.orig.args)
+                logger.error(e.args)
                 await session.rollback()
-            # except SQLAlchemyError as e:
-            #     logger.exception(e) 
+                raise 
             await session.commit()                    
         return parts
 

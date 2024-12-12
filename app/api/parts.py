@@ -1,7 +1,8 @@
 from fastapi import (
     APIRouter, 
     Depends,
-    status
+    status,
+    HTTPException
 )
 from fastapi.responses import JSONResponse
 
@@ -36,7 +37,7 @@ async def get_parts(
         '/{part_art}/',
         response_model=APIPartResponse)
 async def get_part_by(
-    part_art: str, part: ServicePart = Depends(ServicePart.get_part)
+    part_art: str, part: Part_out = Depends(ServicePart.get_part)
 ) -> JSONResponse:
     response_part = part.model_dump_json()
     return JSONResponse(
@@ -51,9 +52,13 @@ async def get_part_by(
     status_code=status.HTTP_201_CREATED
     )
 async def add_parts(
-    parts: list[Part_in] = Depends(ServicePart.add_parts) 
+    service: ServicePart = Depends(ServicePart) 
     ) -> JSONResponse:
-    data = [part.model_dump() for part in parts]
+    try:
+        
+        data = [part.model_dump() for part in service.parts]
+    except Exception:
+        raise HTTPException(status_code=404, detail='Error')
     return JSONResponse(
         content = {
             'status': 'ok',
